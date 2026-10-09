@@ -14,7 +14,8 @@
   "dimensions_section",
   "length_m",
   "width_m",
-  "area_m2"
+  "area_m2",
+  "sort_key"
  ],
  "fields": [
   {
@@ -67,25 +68,35 @@
    "default": "45",
    "fieldname": "length_m",
    "fieldtype": "Float",
-   "label": "Length (m)"
+   "label": "Length (m)",
+   "precision": "1"
   },
   {
    "default": "45",
    "fieldname": "width_m",
    "fieldtype": "Float",
-   "label": "Width (m)"
+   "label": "Width (m)",
+   "precision": "1"
   },
   {
    "fieldname": "area_m2",
    "fieldtype": "Float",
    "label": "Area (m\u00b2)",
+   "precision": "0",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sort_key",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Sort Key",
    "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-09 15:48:47.315913",
+ "modified": "2026-10-09 17:52:40.292968",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Pond",
@@ -107,7 +118,7 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "sort_field": "creation",
- "sort_order": "DESC",
+ "sort_field": "sort_key",
+ "sort_order": "ASC",
  "states": []
 }

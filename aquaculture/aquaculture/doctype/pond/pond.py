@@ -22,8 +22,10 @@ class Pond(Document):
 		length_m: DF.Float
 		pond_label: DF.Data | None
 		pond_number: DF.Int
+		sort_key: DF.Data | None
 		width_m: DF.Float
 	# end: auto-generated types
+
 	def autoname(self):
 		self.name = f"{self.block}{self.pond_number}"
 
