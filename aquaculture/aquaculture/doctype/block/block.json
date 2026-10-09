@@ -40,7 +40,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-08 00:58:34.890353",
+ "modified": "2026-10-09 17:44:08.776498",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Block",
@@ -62,7 +62,7 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "sort_field": "creation",
- "sort_order": "DESC",
+ "sort_field": "name",
+ "sort_order": "ASC",
  "states": []
 }

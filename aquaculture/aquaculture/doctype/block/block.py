@@ -19,6 +19,7 @@ class Block(Document):
 		cost_center: DF.Link
 		farm_site: DF.Link
 	# end: auto-generated types
+
 	def autoname(self):
 		site_code = frappe.db.get_value("Farm Site", self.farm_site, "site_code")
 		self.name = f"{site_code}-{self.block_letter.strip().upper()}"
