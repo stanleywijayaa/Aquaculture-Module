@@ -108,7 +108,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-10 20:00:55.499721",
+ "modified": "2026-10-11 02:54:32.427677",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Pond Cycle",
@@ -132,5 +132,22 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [
+  {
+   "color": "Orange",
+   "title": "Preparation"
+  },
+  {
+   "color": "Green",
+   "title": "Stocked"
+  },
+  {
+   "color": "Purple",
+   "title": "Partially Harvested"
+  },
+  {
+   "color": "Gray",
+   "title": "Closed"
+  }
+ ]
 }
