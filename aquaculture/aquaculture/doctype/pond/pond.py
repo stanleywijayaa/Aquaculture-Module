@@ -40,3 +40,24 @@ class Pond(Document):
 		self.area_m2 = (self.length_m or 0) * (self.width_m or 0)
 
 	pass
+
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def pond_query(doctype, txt, searchfield, start, page_len, filters):
+	conditions = {"disabled": 0}
+	if filters:
+		conditions.update(filters)
+
+	return frappe.get_all(
+		"Pond",
+		filters=conditions,
+		or_filters={
+			"name": ["like", f"%{txt}%"],
+			"pond_label": ["like", f"%{txt}%"],
+		},
+		fields=["name", "pond_label", "farm_site"],
+		order_by="sort_key asc",
+		start=start,
+		page_length=page_len,
+		as_list=True,
+	)
