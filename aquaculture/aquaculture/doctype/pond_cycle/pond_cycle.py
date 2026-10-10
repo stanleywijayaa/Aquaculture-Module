@@ -39,6 +39,7 @@ class PondCycle(Document):
 		return date_diff(end, self.stocking_date)
 
 	def validate(self):
+		self.validate_closed_lock()
 		pond = frappe.db.get_value("Pond", self.pond, ["block", "farm_site", "disabled"], as_dict=True)
 		self.block = pond.block
 		self.farm_site = pond.farm_site
@@ -68,5 +69,17 @@ class PondCycle(Document):
 		if other:
 			frappe.throw(_("Pond {0} already has an open cycle: {1}. Close it first.")
 						 .format(self.pond, other))
+			
+	def validate_closed_lock(self):
+		before = self.get_doc_before_save()
+		if not before or before.status != "Closed":
+			return
+		if "System Manager" in frappe.get_roles():
+			return
+
+		locked = ("pond", "status", "prep_start_date", "stocking_date", "end_date")
+		changed = [f for f in locked if str(self.get(f) or "") != str(before.get(f) or "")]
+		if changed:
+			frappe.throw(_("Cycle {0} is closed. Only a manager can change it.").format(self.name))
 
 	pass
