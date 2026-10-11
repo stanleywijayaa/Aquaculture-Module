@@ -17,8 +17,6 @@ class FarmSite(Document):
 		from frappe.types import DF
 
 		cost_center: DF.Link | None
-		default_density_max: DF.Int
-		default_density_min: DF.Int
 		site_code: DF.Data
 		site_name: DF.Data
 		warehouses: DF.Table[FarmSiteWarehouse]
@@ -26,13 +24,7 @@ class FarmSite(Document):
 
 	def validate(self):
 		self.site_code = (self.site_code or "").strip().upper()
-		self.validate_density()
 		self.validate_warehouses()
-
-	def validate_density(self):
-		if self.default_density_min and self.default_density_max:
-			if self.default_density_min > self.default_density_max:
-				frappe.throw(_("Default Density Min cannot be greater than Max"))
 
 	def validate_warehouses(self):
 		seen = set()

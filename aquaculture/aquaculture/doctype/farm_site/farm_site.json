@@ -10,9 +10,6 @@
   "site_name",
   "site_code",
   "cost_center",
-  "stocking_defaults_section",
-  "default_density_min",
-  "default_density_max",
   "warehouses_section",
   "warehouses"
  ],
@@ -41,23 +38,6 @@
    "options": "Cost Center"
   },
   {
-   "fieldname": "stocking_defaults_section",
-   "fieldtype": "Section Break",
-   "label": "Stocking Defaults"
-  },
-  {
-   "fieldname": "default_density_min",
-   "fieldtype": "Int",
-   "label": "Default Density Min",
-   "non_negative": 1
-  },
-  {
-   "fieldname": "default_density_max",
-   "fieldtype": "Int",
-   "label": "Default Density Max",
-   "non_negative": 1
-  },
-  {
    "fieldname": "warehouses_section",
    "fieldtype": "Section Break",
    "label": "WarehousesWarehouses\t"
@@ -72,7 +52,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-05 00:22:25.639029",
+ "modified": "2026-10-12 00:50:06.232545",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Farm Site",
