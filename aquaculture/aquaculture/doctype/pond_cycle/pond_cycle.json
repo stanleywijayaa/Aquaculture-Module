@@ -16,6 +16,8 @@
   "end_date",
   "column_break_dates",
   "days_of_culture",
+  "total_stocked",
+  "density_per_m2",
   "notes_section",
   "notes"
  ],
@@ -67,14 +69,14 @@
    "fieldname": "prep_start_date",
    "fieldtype": "Date",
    "label": "Prep Start Date",
-   "options": "prep_start_date",
    "reqd": 1
   },
   {
    "fieldname": "stocking_date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Stocking Date"
+   "label": "Stocking Date",
+   "read_only": 1
   },
   {
    "fieldname": "end_date",
@@ -103,12 +105,36 @@
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"
+  },
+  {
+   "fieldname": "total_stocked",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Total Stocked",
+   "read_only": 1
+  },
+  {
+   "fieldname": "density_per_m2",
+   "fieldtype": "Float",
+   "is_virtual": 1,
+   "label": "Density (per m\u00b2)",
+   "precision": "0",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2026-10-11 02:54:32.427677",
+ "links": [
+  {
+   "group": "Cycle Logs",
+   "is_child_table": 1,
+   "link_doctype": "Stocking Event Pond",
+   "link_fieldname": "pond_cycle",
+   "parent_doctype": "Stocking Event",
+   "table_fieldname": "ponds"
+  }
+ ],
+ "modified": "2026-10-12 02:15:20.818093",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Pond Cycle",

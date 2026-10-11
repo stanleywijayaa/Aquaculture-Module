@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-10-12 01:39:38.304973",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pond_cycle",
+  "pond",
+  "quantity"
+ ],
+ "fields": [
+  {
+   "fieldname": "pond_cycle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Pond Cycle",
+   "options": "Pond Cycle",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "pond_cycle.pond",
+   "fieldname": "pond",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Pond",
+   "options": "Pond",
+   "read_only": 1
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity (ekor)",
+   "non_negative": 1,
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-12 01:42:03.051425",
+ "modified_by": "Administrator",
+ "module": "Aquaculture",
+ "name": "Stocking Event Pond",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

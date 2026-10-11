@@ -6,6 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
 from frappe.utils import date_diff, getdate, today
+from frappe.query_builder.functions import Min, Sum
 
 
 class PondCycle(Document):
@@ -25,6 +26,7 @@ class PondCycle(Document):
 		prep_start_date: DF.Date
 		status: DF.Literal["Preparation", "Stocked", "Partially Harvested", "Closed"]
 		stocking_date: DF.Date | None
+		total_stocked: DF.Int
 	# end: auto-generated types
 
 	def autoname(self):
@@ -81,5 +83,27 @@ class PondCycle(Document):
 		changed = [f for f in locked if str(self.get(f) or "") != str(before.get(f) or "")]
 		if changed:
 			frappe.throw(_("Cycle {0} is closed. Only a manager can change it.").format(self.name))
+
+	@property
+	def density_per_m2(self):
+		area = frappe.db.get_value("Pond", self.pond, "area_m2")
+		return (self.total_stocked or 0) / area if area else None
+
+	def update_stocking(self):
+		row = frappe.qb.DocType("Stocking Event Pond")
+		event = frappe.qb.DocType("Stocking Event")
+		first_date, total = (
+			frappe.qb.from_(row)
+			.join(event).on(row.parent == event.name)
+			.select(Min(event.stocking_date), Sum(row.quantity))
+			.where((row.pond_cycle == self.name) & (row.parenttype == "Stocking Event"))
+		).run()[0]
+
+		self.db_set({"stocking_date": first_date, "total_stocked": total or 0})
+
+		if first_date and self.status == "Preparation":
+			self.db_set("status", "Stocked")
+		elif not first_date and self.status == "Stocked":
+			self.db_set("status", "Preparation")
 
 	pass
