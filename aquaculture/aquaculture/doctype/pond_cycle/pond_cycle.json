@@ -18,6 +18,9 @@
   "days_of_culture",
   "total_stocked",
   "density_per_m2",
+  "total_death",
+  "est_alive",
+  "est_survival",
   "notes_section",
   "notes"
  ],
@@ -120,6 +123,26 @@
    "label": "Density (per m\u00b2)",
    "precision": "0",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_death",
+   "fieldtype": "Int",
+   "label": "Total Death",
+   "read_only": 1
+  },
+  {
+   "fieldname": "est_alive",
+   "fieldtype": "Int",
+   "is_virtual": 1,
+   "label": "Est. Alive",
+   "read_only": 1
+  },
+  {
+   "fieldname": "est_survival",
+   "fieldtype": "Percent",
+   "is_virtual": 1,
+   "label": "Est. Survival (%)",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -134,7 +157,7 @@
    "table_fieldname": "ponds"
   }
  ],
- "modified": "2026-10-12 02:15:20.818093",
+ "modified": "2026-10-12 15:54:55.387794",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Pond Cycle",

@@ -26,6 +26,7 @@ class PondCycle(Document):
 		prep_start_date: DF.Date
 		status: DF.Literal["Preparation", "Stocked", "Partially Harvested", "Closed"]
 		stocking_date: DF.Date | None
+		total_death: DF.Int
 		total_stocked: DF.Int
 	# end: auto-generated types
 
@@ -105,5 +106,24 @@ class PondCycle(Document):
 			self.db_set("status", "Stocked")
 		elif not first_date and self.status == "Stocked":
 			self.db_set("status", "Preparation")
+
+	@property
+	def est_alive(self):
+		return (self.total_stocked or 0) - (self.total_death or 0)
+
+	@property
+	def est_survival(self):
+		if not self.total_stocked:
+			return None
+		return self.est_alive / self.total_stocked * 100
+
+	def update_mortality(self):
+		row = frappe.qb.DocType("Daily Pond Check Row")
+		total = (
+			frappe.qb.from_(row)
+			.select(Sum(row.death_count))
+			.where((row.pond_cycle == self.name) & (row.parenttype == "Daily Pond Check"))
+		).run()[0][0]
+		self.db_set("total_death", total or 0)
 
 	pass

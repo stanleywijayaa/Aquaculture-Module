@@ -1,0 +1,105 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-10-12 15:44:15.468830",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "check_date",
+  "session",
+  "farm_site",
+  "checked_by",
+  "column_break_1",
+  "total_death",
+  "ponds_section",
+  "rows"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "check_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Check Date",
+   "reqd": 1
+  },
+  {
+   "default": "Morning",
+   "fieldname": "session",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Session",
+   "options": "Morning\nAfternoon",
+   "reqd": 1
+  },
+  {
+   "fieldname": "farm_site",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Farm Site",
+   "options": "Farm Site",
+   "reqd": 1
+  },
+  {
+   "fieldname": "checked_by",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Checked By",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break",
+   "label": "Column Break"
+  },
+  {
+   "fieldname": "total_death",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Total Death",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ponds_section",
+   "fieldtype": "Section Break",
+   "label": "Ponds"
+  },
+  {
+   "fieldname": "rows",
+   "fieldtype": "Table",
+   "label": "Rows",
+   "options": "Daily Pond Check Row",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-12 15:48:37.977810",
+ "modified_by": "Administrator",
+ "module": "Aquaculture",
+ "name": "Daily Pond Check",
+ "naming_rule": "By script",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "check_date",
+ "sort_order": "DESC",
+ "states": []
+}
