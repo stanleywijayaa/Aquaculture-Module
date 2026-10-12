@@ -17,8 +17,10 @@ class DailyPondCheck(Document):
 		from aquaculture.aquaculture.doctype.daily_pond_check_row.daily_pond_check_row import DailyPondCheckRow
 		from frappe.types import DF
 
+		block: DF.Link
 		check_date: DF.Date
-		checked_by: DF.Data
+		checked_by: DF.Link
+		checked_by_name: DF.Data | None
 		farm_site: DF.Link
 		rows: DF.Table[DailyPondCheckRow]
 		session: DF.Literal["Morning", "Afternoon"]

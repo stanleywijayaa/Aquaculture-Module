@@ -9,7 +9,9 @@
   "check_date",
   "session",
   "farm_site",
+  "block",
   "checked_by",
+  "checked_by_name",
   "column_break_1",
   "total_death",
   "ponds_section",
@@ -43,10 +45,11 @@
   },
   {
    "fieldname": "checked_by",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Checked By",
+   "options": "Employee",
    "reqd": 1
   },
   {
@@ -72,12 +75,29 @@
    "label": "Rows",
    "options": "Daily Pond Check Row",
    "reqd": 1
+  },
+  {
+   "fieldname": "block",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Block",
+   "options": "Block",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "checked_by.employee_name",
+   "fieldname": "checked_by_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Checked By Name",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-12 15:48:37.977810",
+ "modified": "2026-10-12 17:31:48.690736",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Daily Pond Check",
