@@ -11,6 +11,8 @@
   "pond",
   "death_count",
   "feed_leftover",
+  "ph",
+  "temperature",
   "notes"
  ],
  "fields": [
@@ -50,13 +52,29 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Notes"
+  },
+  {
+   "fieldname": "ph",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "pH",
+   "non_negative": 1,
+   "precision": "1"
+  },
+  {
+   "fieldname": "temperature",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Temp (\u00b0C)",
+   "non_negative": 1,
+   "precision": "1"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-10-12 15:43:37.756673",
+ "modified": "2026-10-13 18:16:00.134147",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Daily Pond Check Row",

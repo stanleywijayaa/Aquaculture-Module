@@ -20,8 +20,10 @@ class DailyPondCheckRow(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		ph: DF.Float
 		pond: DF.Link | None
 		pond_cycle: DF.Link
+		temperature: DF.Float
 	# end: auto-generated types
 
 	pass
