@@ -1,14 +1,14 @@
 {
  "actions": [],
  "allow_bulk_edit": 1,
- "allow_rename": 1,
  "creation": "2026-10-08 00:18:06.265596",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "farm_site",
   "block_letter",
-  "cost_center"
+  "cost_center",
+  "warehouse"
  ],
  "fields": [
   {
@@ -35,12 +35,20 @@
    "label": "Cost Center",
    "options": "Cost Center",
    "reqd": 1
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-09 17:44:08.776498",
+ "modified": "2026-10-16 01:57:44.051051",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Block",

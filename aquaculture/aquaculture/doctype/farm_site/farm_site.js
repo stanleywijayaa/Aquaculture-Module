@@ -3,13 +3,7 @@
 
 frappe.ui.form.on("Farm Site", {
 	setup(frm) {
-		frm.set_query("warehouse", "warehouses", () => {
-			return {
-				filters: {
-					is_group: 0,
-					disabled: 0,
-				},
-			};
-		});
+		frm.set_query("warehouse", () => ({ filters: { is_group: 1 } }));
+		frm.set_query("cost_center", () => ({ filters: { is_group: 1 } }));
 	},
 });

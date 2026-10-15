@@ -18,6 +18,7 @@ class Block(Document):
 		block_letter: DF.Data
 		cost_center: DF.Link
 		farm_site: DF.Link
+		warehouse: DF.Link
 	# end: auto-generated types
 
 	def autoname(self):
@@ -27,6 +28,7 @@ class Block(Document):
 	def validate(self):
 		self.block_letter = (self.block_letter or "").strip().upper()
 		self.validate_cost_center()
+		self.validate_warehouse()
 
 	def validate_cost_center(self):
 		site_cc = frappe.db.get_value("Farm Site", self.farm_site, "cost_center")
@@ -41,5 +43,17 @@ class Block(Document):
 		if site_cc and cc.parent_cost_center != site_cc:
 			frappe.throw(_("Cost Center {0} does not belong to {1} (expected under {2})")
 						 .format(self.cost_center, self.farm_site, site_cc))
+
+	def validate_warehouse(self):
+		site_wh = frappe.db.get_value("Farm Site", self.farm_site, "warehouse")
+		wh = frappe.db.get_value(
+			"Warehouse", self.warehouse, ["is_group", "parent_warehouse"], as_dict=True
+		)
+		if not wh.is_group:
+			frappe.throw(_("{0} must be a group warehouse (the block's own group)")
+						 .format(self.warehouse))
+		if site_wh and wh.parent_warehouse != site_wh:
+			frappe.throw(_("Warehouse {0} is not under {1}'s warehouse {2}")
+						 .format(self.warehouse, self.farm_site, site_wh))
 
 	pass

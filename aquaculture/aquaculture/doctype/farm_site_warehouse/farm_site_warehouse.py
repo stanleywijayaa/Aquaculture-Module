@@ -18,7 +18,7 @@ class FarmSiteWarehouse(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		warehouse: DF.Link
+		warehouse_type: DF.Link
 	# end: auto-generated types
 
 	pass

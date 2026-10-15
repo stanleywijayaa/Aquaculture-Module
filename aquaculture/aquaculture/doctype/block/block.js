@@ -6,5 +6,6 @@ frappe.ui.form.on("Block", {
 		frm.set_query("cost_center", () => ({
 			filters: { is_group: 0 },
 		}));
+		frm.set_query("warehouse", () => ({ filters: { is_group: 1 } }));
 	},
 });

@@ -1,7 +1,6 @@
 {
  "actions": [],
  "allow_bulk_edit": 1,
- "allow_rename": 1,
  "creation": "2026-10-09 00:17:01.510757",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -96,7 +95,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-09 17:52:40.292968",
+ "modified": "2026-10-16 01:58:00.353271",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Pond",
