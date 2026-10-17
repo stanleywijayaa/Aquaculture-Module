@@ -181,13 +181,11 @@ use_json_request_body = True
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Purchase Receipt": {"validate": "aquaculture.aquaculture.utils.validate_stock_rows"},
+	"Stock Entry": {"validate": "aquaculture.aquaculture.utils.validate_stock_rows"},
+	"Stock Reconciliation": {"validate": "aquaculture.aquaculture.utils.validate_stock_rows"},
+}
 
 # Scheduled Tasks
 # ---------------
