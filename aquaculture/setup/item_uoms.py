@@ -1,9 +1,16 @@
 import frappe
 
-# Kg per Sak; every feed item not listed here is 25 kg
+import frappe
+
+# Kg per Sak, keyed by Item Code (the admin's KODE BARANG); every other Pakan item is 25 kg
 SAK_KG = {
-	"PAK01": 10, "PAK18": 10,                                       # 681V, 999-110
-	"PAK19": 20, "PAK20": 20, "PAK21": 20, "PAK22": 20, "PAK23": 20,  # 999-212/3/4, PU TOV 20 kg
+	"681V": 10,          # Pakan Irawan 681V
+	"999-1": 10,         # Pakan Marine 999-110
+	"999-2": 20,         # Pakan Marine 999-212
+	"999-3": 20,         # Pakan Marine 999-3
+	"999-4": 20,         # Pakan Marine 999-4
+	"PU.P1.4.20": 20,    # PU TOV P1.4 (20 kg)
+	"PU.P1.6.20": 20,    # PU TOV P1.6 (20 kg)
 }
 DEFAULT_SAK_KG = 25
 
@@ -20,6 +27,6 @@ def execute():
 			item.append("uoms", {"uom": "Sak", "conversion_factor": kg})
 		item.purchase_uom = "Sak"
 		item.save()
-		print(code, item.item_name, "1 Sak =", kg, "Kg")
+		print(code, item.item_name, "1 Sak = ", kg, "Kg")
 
 	frappe.db.commit()
