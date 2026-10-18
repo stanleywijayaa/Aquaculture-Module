@@ -21,6 +21,9 @@
   "total_death",
   "est_alive",
   "est_survival",
+  "feed_section",
+  "total_feed_kg",
+  "total_feed_cost",
   "notes_section",
   "notes"
  ],
@@ -89,7 +92,7 @@
   {
    "fieldname": "column_break_dates",
    "fieldtype": "Column Break",
-   "label": "Column Break"
+   "label": "Population"
   },
   {
    "fieldname": "days_of_culture",
@@ -143,6 +146,24 @@
    "is_virtual": 1,
    "label": "Est. Survival (%)",
    "read_only": 1
+  },
+  {
+   "fieldname": "feed_section",
+   "fieldtype": "Section Break",
+   "label": "Feed"
+  },
+  {
+   "fieldname": "total_feed_kg",
+   "fieldtype": "Float",
+   "label": "Total Feed (Kg)",
+   "precision": "1",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_feed_cost",
+   "fieldtype": "Currency",
+   "label": "Total Feed Cost",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -155,9 +176,16 @@
    "link_fieldname": "pond_cycle",
    "parent_doctype": "Stocking Event",
    "table_fieldname": "ponds"
+  },
+  {
+   "is_child_table": 1,
+   "link_doctype": "Feed Log Item",
+   "link_fieldname": "pond_cycle",
+   "parent_doctype": "Feed Log",
+   "table_fieldname": "items"
   }
  ],
- "modified": "2026-10-12 15:54:55.387794",
+ "modified": "2026-10-19 02:48:18.080464",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Pond Cycle",

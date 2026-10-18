@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-10-19 00:13:24.060293",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "feed_date",
+  "pond_cycle",
+  "pond",
+  "item_code",
+  "qty_kg",
+  "cost",
+  "stock_entry"
+ ],
+ "fields": [
+  {
+   "fieldname": "feed_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pond_cycle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Pond Cycle",
+   "options": "Pond Cycle",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "pond_cycle.pond",
+   "fieldname": "pond",
+   "fieldtype": "Link",
+   "label": "Pond",
+   "options": "Pond",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Feed Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "qty_kg",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty (kg)",
+   "precision": "1"
+  },
+  {
+   "fieldname": "cost",
+   "fieldtype": "Currency",
+   "label": "Cost",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock Entry",
+   "no_copy": 1,
+   "options": "Stock Entry",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-19 00:53:02.303010",
+ "modified_by": "Administrator",
+ "module": "Aquaculture",
+ "name": "Feed Log Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

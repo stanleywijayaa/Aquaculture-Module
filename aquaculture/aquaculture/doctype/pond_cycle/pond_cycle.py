@@ -5,7 +5,7 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.model.naming import make_autoname
-from frappe.utils import date_diff, getdate, today
+from frappe.utils import date_diff, flt, getdate, today
 from frappe.query_builder.functions import Min, Sum
 
 
@@ -27,6 +27,8 @@ class PondCycle(Document):
 		status: DF.Literal["Preparation", "Stocked", "Partially Harvested", "Closed"]
 		stocking_date: DF.Date | None
 		total_death: DF.Int
+		total_feed_cost: DF.Currency
+		total_feed_kg: DF.Float
 		total_stocked: DF.Int
 	# end: auto-generated types
 
@@ -125,5 +127,16 @@ class PondCycle(Document):
 			.where((row.pond_cycle == self.name) & (row.parenttype == "Daily Pond Check"))
 		).run()[0][0]
 		self.db_set("total_death", total or 0)
+
+	def update_feed(self):
+		fl = frappe.qb.DocType("Feed Log")
+		fi = frappe.qb.DocType("Feed Log Item")
+		kg, cost = (
+			frappe.qb.from_(fi)
+			.join(fl).on(fi.parent == fl.name)
+			.select(Sum(fi.qty_kg), Sum(fi.cost))
+			.where((fi.pond_cycle == self.name) & (fl.docstatus == 1))
+		).run()[0]
+		self.db_set({"total_feed_kg": flt(kg), "total_feed_cost": flt(cost)})
 
 	pass

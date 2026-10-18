@@ -1,0 +1,138 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-10-19 00:54:50.765517",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "block",
+  "farm_site",
+  "from_date",
+  "to_date",
+  "column_break_1",
+  "default_item",
+  "default_item_2",
+  "total_kg",
+  "feeding_section",
+  "items",
+  "notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "block",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Block",
+   "options": "Block",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "block.farm_site",
+   "fieldname": "farm_site",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Farm Site",
+   "options": "Farm Site",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_item_2",
+   "fieldtype": "Link",
+   "label": "Second Feed",
+   "options": "Item"
+  },
+  {
+   "fieldname": "total_kg",
+   "fieldtype": "Float",
+   "label": "Total Feed (Kg)",
+   "precision": "1",
+   "read_only": 1
+  },
+  {
+   "fieldname": "feeding_section",
+   "fieldtype": "Section Break",
+   "label": "Feeding"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Rows",
+   "options": "Feed Log Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Feed Log",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "default_item",
+   "fieldtype": "Link",
+   "label": "Default Feed",
+   "options": "Item"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-10-19 04:09:04.847479",
+ "modified_by": "Administrator",
+ "module": "Aquaculture",
+ "name": "Feed Log",
+ "naming_rule": "By script",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
