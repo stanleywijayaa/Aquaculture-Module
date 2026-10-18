@@ -16,6 +16,17 @@ frappe.ui.form.on("Feed Log", {
 			frm.add_custom_button(__("Get Ponds"), () => fill_rows(frm));
 		}
 	},
+
+    onload(frm) {
+		// an amended copy must not point at the cancelled stock entries
+		if (frm.is_new() && frm.doc.amended_from) {
+			(frm.doc.items || []).forEach((r) => {
+				r.stock_entry = null;
+				r.cost = 0;
+			});
+			frm.refresh_field("items");
+		}
+	},
 });
 
 frappe.ui.form.on("Feed Log Item", {
