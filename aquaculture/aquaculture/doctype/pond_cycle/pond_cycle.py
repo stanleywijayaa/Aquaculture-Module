@@ -7,6 +7,7 @@ from frappe.model.document import Document
 from frappe.model.naming import make_autoname
 from frappe.utils import date_diff, flt, getdate, today
 from frappe.query_builder.functions import Min, Sum
+from frappe.query_builder import Order
 
 
 class PondCycle(Document):
@@ -20,7 +21,12 @@ class PondCycle(Document):
 
 		block: DF.Link | None
 		end_date: DF.Date | None
+		est_biomass_kg: DF.Float
 		farm_site: DF.Link | None
+		fcr: DF.Float
+		last_abw_g: DF.Float
+		last_count_per_kg: DF.Int
+		last_sample_date: DF.Date | None
 		notes: DF.SmallText | None
 		pond: DF.Link
 		prep_start_date: DF.Date
@@ -138,5 +144,24 @@ class PondCycle(Document):
 			.where((fi.pond_cycle == self.name) & (fl.docstatus == 1))
 		).run()[0]
 		self.db_set({"total_feed_kg": flt(kg), "total_feed_cost": flt(cost)})
+
+	def update_growth(self):
+		gs = frappe.qb.DocType("Growth Sample")
+		gr = frappe.qb.DocType("Growth Sample Row")
+		rows = (
+			frappe.qb.from_(gr).join(gs).on(gr.parent == gs.name)
+			.select(gs.sample_date, gr.count_per_kg, gr.abw_g, gr.est_biomass_kg, gr.fcr)
+			.where(gr.pond_cycle == self.name)
+			.orderby(gs.sample_date, order=Order.desc)
+			.limit(1)
+		).run(as_dict=True)
+		last = rows[0] if rows else {}
+		self.db_set({
+			"last_sample_date": last.get("sample_date"),
+			"last_count_per_kg": last.get("count_per_kg") or 0,
+			"last_abw_g": last.get("abw_g") or 0,
+			"est_biomass_kg": last.get("est_biomass_kg") or 0,
+			"fcr": last.get("fcr") or 0,
+		})
 
 	pass
