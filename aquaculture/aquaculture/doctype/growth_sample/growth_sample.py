@@ -70,11 +70,13 @@ class GrowthSample(Document):
 		r.culture_day = date_diff(self.sample_date, stocking_date)
 		r.abw_g = 1000 / r.count_per_kg
 
-		alive = max(flt(total_stocked) - deaths_until(r.pond_cycle, self.sample_date), 0)
+		harvested_pcs, harvested_kg = harvested_until(r.pond_cycle, self.sample_date)
+		alive = max(flt(total_stocked) - deaths_until(r.pond_cycle, self.sample_date) - harvested_pcs, 0)
 		r.est_biomass_kg = alive * r.abw_g / 1000
 
 		r.feed_to_date_kg = feed_until(r.pond_cycle, self.sample_date)
-		r.fcr = r.feed_to_date_kg / r.est_biomass_kg if r.est_biomass_kg else 0
+		grown_kg = r.est_biomass_kg + harvested_kg
+		r.fcr = r.feed_to_date_kg / grown_kg if grown_kg else 0
 
 	def on_update(self):
 		cycles = {r.pond_cycle for r in self.rows}
@@ -109,6 +111,17 @@ def deaths_until(pond_cycle, date):
 		.where((dr.pond_cycle == pond_cycle) & (dc.check_date <= date))
 	).run()[0][0]
 	return flt(total)
+
+def harvested_until(pond_cycle, date):
+	"""Pieces and kg taken out of this cycle by submitted harvests up to and including `date`."""
+	he = frappe.qb.DocType("Harvest Event")
+	hr = frappe.qb.DocType("Harvest Event Pond")
+	pcs, kg = (
+		frappe.qb.from_(hr).join(he).on(hr.parent == he.name)
+		.select(Sum(hr.pieces), Sum(hr.weight_kg))
+		.where((hr.pond_cycle == pond_cycle) & (he.docstatus == 1) & (he.harvest_date <= date))
+	).run()[0]
+	return flt(pcs), flt(kg)
 
 
 def update_cycles(cycles):

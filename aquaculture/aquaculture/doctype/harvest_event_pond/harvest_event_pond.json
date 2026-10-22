@@ -1,0 +1,85 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-10-21 03:13:35.287912",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pond_cycle",
+  "pond",
+  "harvest_type",
+  "weight_kg",
+  "count_per_kg",
+  "abw_g",
+  "pieces"
+ ],
+ "fields": [
+  {
+   "fieldname": "pond_cycle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Pond Cycle",
+   "options": "Pond Cycle",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "pond_cycle.pond",
+   "fieldname": "pond",
+   "fieldtype": "Link",
+   "label": "Pond",
+   "options": "Pond",
+   "read_only": 1
+  },
+  {
+   "fieldname": "harvest_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "Partial\nTotal"
+  },
+  {
+   "fieldname": "weight_kg",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Weight (kg)",
+   "precision": "1"
+  },
+  {
+   "fieldname": "count_per_kg",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Size (count/kg)"
+  },
+  {
+   "fieldname": "abw_g",
+   "fieldtype": "Float",
+   "label": "ABW (g)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pieces",
+   "fieldtype": "Float",
+   "label": "Est. Pieces",
+   "precision": "0",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-21 03:40:03.134600",
+ "modified_by": "Administrator",
+ "module": "Aquaculture",
+ "name": "Harvest Event Pond",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -24,6 +24,8 @@ class PondCycle(Document):
 		est_biomass_kg: DF.Float
 		farm_site: DF.Link | None
 		fcr: DF.Float
+		final_fcr: DF.Float
+		harvest_survival: DF.Percent
 		last_abw_g: DF.Float
 		last_count_per_kg: DF.Int
 		last_sample_date: DF.Date | None
@@ -35,6 +37,8 @@ class PondCycle(Document):
 		total_death: DF.Int
 		total_feed_cost: DF.Currency
 		total_feed_kg: DF.Float
+		total_harvest_kg: DF.Float
+		total_harvest_pcs: DF.Float
 		total_stocked: DF.Int
 	# end: auto-generated types
 
@@ -117,13 +121,13 @@ class PondCycle(Document):
 
 	@property
 	def est_alive(self):
-		return (self.total_stocked or 0) - (self.total_death or 0)
+		return max(flt(self.total_stocked) - flt(self.total_deaths) - flt(self.total_harvest_pcs), 0)
 
 	@property
 	def est_survival(self):
 		if not self.total_stocked:
-			return None
-		return self.est_alive / self.total_stocked * 100
+			return 0
+		return (self.est_alive + flt(self.total_harvest_pcs)) / flt(self.total_stocked) * 100
 
 	def update_mortality(self):
 		row = frappe.qb.DocType("Daily Pond Check Row")
@@ -162,6 +166,36 @@ class PondCycle(Document):
 			"last_abw_g": last.get("abw_g") or 0,
 			"est_biomass_kg": last.get("est_biomass_kg") or 0,
 			"fcr": last.get("fcr") or 0,
+		})
+
+	def update_harvest(self):
+		he = frappe.qb.DocType("Harvest Event")
+		hr = frappe.qb.DocType("Harvest Event Pond")
+		rows = (
+			frappe.qb.from_(hr).join(he).on(hr.parent == he.name)
+			.select(he.harvest_date, hr.harvest_type, hr.weight_kg, hr.pieces)
+			.where((hr.pond_cycle == self.name) & (he.docstatus == 1))
+		).run(as_dict=True)
+
+		kg = sum(flt(r.weight_kg) for r in rows)
+		pcs = sum(flt(r.pieces) for r in rows)
+		totals = [r for r in rows if r.harvest_type == "Total"]
+
+		if totals:
+			status, end_date = "Closed", max(r.harvest_date for r in totals)
+		elif rows:
+			status, end_date = "Partially Harvested", None
+		else:
+			status, end_date = "Stocked", None
+
+		closed = bool(totals)
+		self.db_set({
+			"status": status,
+			"end_date": end_date,
+			"total_harvest_kg": kg,
+			"total_harvest_pcs": pcs,
+			"harvest_survival": pcs / flt(self.total_stocked) * 100 if closed and pcs and self.total_stocked else 0,
+			"final_fcr": flt(self.total_feed_kg) / kg if closed and kg else 0,
 		})
 
 	pass

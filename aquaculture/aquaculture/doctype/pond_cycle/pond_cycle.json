@@ -31,6 +31,12 @@
   "column_break_growth",
   "fcr",
   "est_biomass_kg",
+  "harvest_section",
+  "total_harvest_kg",
+  "total_harvest_pcs",
+  "column_break_harvest",
+  "harvest_survival",
+  "final_fcr",
   "notes_section",
   "notes"
  ],
@@ -216,6 +222,42 @@
    "label": "Est. Biomass (kg)",
    "precision": "0",
    "read_only": 1
+  },
+  {
+   "fieldname": "harvest_section",
+   "fieldtype": "Section Break",
+   "label": "Harvest"
+  },
+  {
+   "fieldname": "total_harvest_kg",
+   "fieldtype": "Float",
+   "label": "Total Harvest (kg)",
+   "precision": "1",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_harvest_pcs",
+   "fieldtype": "Float",
+   "label": "Harvested Pieces (est.)",
+   "precision": "0",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_harvest",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "harvest_survival",
+   "fieldtype": "Percent",
+   "label": "Survival at Harvest (%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "final_fcr",
+   "fieldtype": "Float",
+   "label": "Final FCR",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -244,7 +286,7 @@
    "table_fieldname": "rows"
   }
  ],
- "modified": "2026-10-21 02:05:35.159836",
+ "modified": "2026-10-21 20:18:20.377881",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Pond Cycle",
