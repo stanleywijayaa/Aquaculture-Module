@@ -49,16 +49,15 @@ class HarvestEvent(Document):
 
 		self.total_kg = sum(flt(r.weight_kg) for r in self.rows)
 
-	def validate_row(self, r, types):
+	def validate_row(self, r, seen):
 		if not r.harvest_type:
 			frappe.throw(_("Row {0}: choose Partial or Total").format(r.idx))
-		# all rows of one pond in this harvest must have the same type
-		if types.setdefault(r.pond_cycle, r.harvest_type) != r.harvest_type:
-			frappe.throw(_("Row {0}: {1} is marked both Partial and Total in this harvest")
-						 .format(r.idx, r.pond_cycle))
-			
 		if not r.count_per_kg or r.count_per_kg <= 0:
-			frappe.throw(_("Row {0}: enter the size (count per kg) for {1}")
+			frappe.throw(_("Row {0}: enter the size (count per kg) for {1}").format(r.idx, r.pond_cycle))
+		# a pond may appear twice (e.g. two buyers), but with the same type and size
+		first = seen.setdefault(r.pond_cycle, (r.harvest_type, r.count_per_kg))
+		if first != (r.harvest_type, r.count_per_kg):
+			frappe.throw(_("Row {0}: {1} has a different type or size in another row. One pond has one size per harvest")
 						 .format(r.idx, r.pond_cycle))
 
 		cycle = frappe.db.get_value("Pond Cycle", r.pond_cycle,

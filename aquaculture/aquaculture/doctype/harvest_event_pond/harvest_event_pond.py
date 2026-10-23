@@ -15,6 +15,7 @@ class HarvestEventPond(Document):
 		from frappe.types import DF
 
 		abw_g: DF.Float
+		buyer: DF.Link | None
 		count_per_kg: DF.Int
 		harvest_type: DF.Literal["Partial", "Total"]
 		parent: DF.Data

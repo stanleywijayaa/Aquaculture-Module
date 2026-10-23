@@ -9,6 +9,8 @@ from frappe.utils import date_diff, flt, getdate, today
 from frappe.query_builder.functions import Min, Sum
 from frappe.query_builder import Order
 
+from aquaculture.aquaculture.utils import deaths, harvested
+
 
 class PondCycle(Document):
 	# begin: auto-generated types
@@ -27,7 +29,9 @@ class PondCycle(Document):
 		final_fcr: DF.Float
 		harvest_survival: DF.Percent
 		last_abw_g: DF.Float
+		last_adg_g: DF.Float
 		last_count_per_kg: DF.Int
+		last_population: DF.Int
 		last_sample_date: DF.Date | None
 		notes: DF.SmallText | None
 		pond: DF.Link
@@ -121,8 +125,14 @@ class PondCycle(Document):
 
 	@property
 	def est_alive(self):
-		return max(flt(self.total_stocked) - flt(self.total_deaths) - flt(self.total_harvest_pcs), 0)
-
+		if self.status == "Closed":
+			return 0
+		if self.last_population and self.last_sample_date:
+			# start from the farm's own estimate, minus what happened since that sample
+			pcs, _ = harvested(self.name, since=self.last_sample_date)
+			return max(flt(self.last_population) - deaths(self.name, after=self.last_sample_date) - pcs, 0)
+		return max(flt(self.total_stocked) - flt(self.total_death) - flt(self.total_harvest_pcs), 0)
+	
 	@property
 	def est_survival(self):
 		if not self.total_stocked:
@@ -166,6 +176,8 @@ class PondCycle(Document):
 			"last_abw_g": last.get("abw_g") or 0,
 			"est_biomass_kg": last.get("est_biomass_kg") or 0,
 			"fcr": last.get("fcr") or 0,
+			"last_population": last.get("population") or 0,
+  			"last_adg_g": last.get("adg_g") or 0,
 		})
 
 	def update_harvest(self):

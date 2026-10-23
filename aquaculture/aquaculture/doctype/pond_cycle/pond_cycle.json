@@ -28,6 +28,8 @@
   "last_sample_date",
   "last_count_per_kg",
   "last_abw_g",
+  "last_population",
+  "last_adg_g",
   "column_break_growth",
   "fcr",
   "est_biomass_kg",
@@ -192,14 +194,14 @@
   {
    "fieldname": "last_count_per_kg",
    "fieldtype": "Int",
-   "label": "Size (count/kg)",
+   "label": "Size (ekor/kg)",
    "read_only": 1
   },
   {
    "description": "Average Body Weight: weight of one shrimp = 1000 \u00f7 count per kg",
    "fieldname": "last_abw_g",
    "fieldtype": "Float",
-   "label": "ABW (g)",
+   "label": "MBW (g)",
    "precision": "2",
    "read_only": 1
   },
@@ -258,6 +260,19 @@
    "label": "Final FCR",
    "precision": "2",
    "read_only": 1
+  },
+  {
+   "fieldname": "last_population",
+   "fieldtype": "Int",
+   "label": "Populasi (last sample)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_adg_g",
+   "fieldtype": "Float",
+   "label": "ADG (g/day)",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -286,7 +301,7 @@
    "table_fieldname": "rows"
   }
  ],
- "modified": "2026-10-21 20:18:20.377881",
+ "modified": "2026-10-23 23:57:03.320410",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Pond Cycle",

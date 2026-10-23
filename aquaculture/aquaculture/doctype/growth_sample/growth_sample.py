@@ -4,8 +4,10 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.query_builder.functions import Sum
-from frappe.utils import date_diff, flt, getdate, today
+from frappe.query_builder import Order
+from frappe.utils import add_days, date_diff, flt, getdate, today
+
+from aquaculture.aquaculture.utils import deaths, feed_kg, harvested
 
 ACTIVE = ("Stocked", "Partially Harvested")
 
@@ -66,15 +68,30 @@ class GrowthSample(Document):
 	def calculate_row(self, r):
 		stocking_date, total_stocked = frappe.db.get_value(
 			"Pond Cycle", r.pond_cycle, ["stocking_date", "total_stocked"])
+		date = self.sample_date
 
-		r.culture_day = date_diff(self.sample_date, stocking_date)
+		r.culture_day = date_diff(date, stocking_date)
 		r.abw_g = 1000 / r.count_per_kg
 
-		harvested_pcs, harvested_kg = harvested_until(r.pond_cycle, self.sample_date)
-		alive = max(flt(total_stocked) - deaths_until(r.pond_cycle, self.sample_date) - harvested_pcs, 0)
-		r.est_biomass_kg = alive * r.abw_g / 1000
+		harvested_pcs, harvested_kg = harvested(r.pond_cycle, before=date)
+		if not r.population:
+			r.population = max(flt(total_stocked) - deaths(r.pond_cycle, to_date=date) - harvested_pcs, 0)
 
-		r.feed_to_date_kg = feed_until(r.pond_cycle, self.sample_date)
+		# harvested shrimp survived too, so they count towards SR
+		r.sr = (flt(r.population) + harvested_pcs) / flt(total_stocked) * 100 if total_stocked else 0
+		r.est_biomass_kg = flt(r.population) * r.abw_g / 1000
+
+		prev = previous_sample(r.pond_cycle, date)
+		if prev:
+			r.adg_g = (r.abw_g - flt(prev.abw_g)) / date_diff(date, prev.sample_date)
+			r.feed_period_kg = feed_kg(r.pond_cycle, to_date=date, after=prev.sample_date)
+		else:
+			r.adg_g = r.abw_g / r.culture_day if r.culture_day else 0
+			r.feed_period_kg = feed_kg(r.pond_cycle, to_date=date)
+
+		r.feed_day_kg = feed_kg(r.pond_cycle, to_date=date, after=add_days(date, -1))
+		r.feed_to_date_kg = feed_kg(r.pond_cycle, to_date=date)
+
 		grown_kg = r.est_biomass_kg + harvested_kg
 		r.fcr = r.feed_to_date_kg / grown_kg if grown_kg else 0
 
@@ -89,39 +106,18 @@ class GrowthSample(Document):
 		update_cycles({r.pond_cycle for r in self.rows})
 
 
-def feed_until(pond_cycle, date):
-	"""Total kg fed to this cycle up to and including `date` (submitted Feed Logs only)."""
-	fl = frappe.qb.DocType("Feed Log")
-	fi = frappe.qb.DocType("Feed Log Item")
-	total = (
-		frappe.qb.from_(fi).join(fl).on(fi.parent == fl.name)
-		.select(Sum(fi.qty_kg))
-		.where((fi.pond_cycle == pond_cycle) & (fl.docstatus == 1) & (fi.feed_date <= date))
-	).run()[0][0]
-	return flt(total)
-
-
-def deaths_until(pond_cycle, date):
-	"""Dead shrimp counted for this cycle up to and including `date`."""
-	dc = frappe.qb.DocType("Daily Pond Check")
-	dr = frappe.qb.DocType("Daily Pond Check Row")
-	total = (
-		frappe.qb.from_(dr).join(dc).on(dr.parent == dc.name)
-		.select(Sum(dr.death_count))
-		.where((dr.pond_cycle == pond_cycle) & (dc.check_date <= date))
-	).run()[0][0]
-	return flt(total)
-
-def harvested_until(pond_cycle, date):
-	"""Pieces and kg taken out of this cycle by submitted harvests up to and including `date`."""
-	he = frappe.qb.DocType("Harvest Event")
-	hr = frappe.qb.DocType("Harvest Event Pond")
-	pcs, kg = (
-		frappe.qb.from_(hr).join(he).on(hr.parent == he.name)
-		.select(Sum(hr.pieces), Sum(hr.weight_kg))
-		.where((hr.pond_cycle == pond_cycle) & (he.docstatus == 1) & (he.harvest_date <= date))
-	).run()[0]
-	return flt(pcs), flt(kg)
+def previous_sample(pond_cycle, date):
+	"""The latest earlier sample of this cycle (date and MBW), or None."""
+	gs = frappe.qb.DocType("Growth Sample")
+	gr = frappe.qb.DocType("Growth Sample Row")
+	rows = (
+		frappe.qb.from_(gr).join(gs).on(gr.parent == gs.name)
+		.select(gs.sample_date, gr.abw_g)
+		.where((gr.pond_cycle == pond_cycle) & (gs.sample_date < date))
+		.orderby(gs.sample_date, order=Order.desc)
+		.limit(1)
+	).run(as_dict=True)
+	return rows[0] if rows else None
 
 
 def update_cycles(cycles):

@@ -13,7 +13,8 @@
   "weight_kg",
   "count_per_kg",
   "abw_g",
-  "pieces"
+  "pieces",
+  "buyer"
  ],
  "fields": [
   {
@@ -65,13 +66,20 @@
    "label": "Est. Pieces",
    "precision": "0",
    "read_only": 1
+  },
+  {
+   "fieldname": "buyer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Buyer",
+   "options": "Customer"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-10-21 03:40:03.134600",
+ "modified": "2026-10-24 00:27:49.219905",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Harvest Event Pond",

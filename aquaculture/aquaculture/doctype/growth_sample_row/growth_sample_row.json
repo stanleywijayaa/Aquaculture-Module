@@ -15,6 +15,11 @@
   "est_biomass_kg",
   "feed_to_date_kg",
   "fcr",
+  "population",
+  "sr",
+  "adg_g",
+  "feed_day_kg",
+  "feed_period_kg",
   "notes"
  ],
  "fields": [
@@ -38,7 +43,7 @@
    "fieldname": "count_per_kg",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Count Per Kg"
+   "label": "Size (ekor/kg)"
   },
   {
    "fieldname": "culture_day",
@@ -51,21 +56,21 @@
    "fieldname": "abw_g",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "ABW (g)",
+   "label": "MBW (g)",
    "precision": "2",
    "read_only": 1
   },
   {
    "fieldname": "est_biomass_kg",
    "fieldtype": "Float",
-   "label": "Est. Biomass (kg)",
+   "label": "Biomass (kg)",
    "precision": "0",
    "read_only": 1
   },
   {
    "fieldname": "feed_to_date_kg",
    "fieldtype": "Float",
-   "label": "Feed to Date",
+   "label": "Cumm Pakan (kg)",
    "precision": "1",
    "read_only": 1
   },
@@ -81,13 +86,49 @@
    "fieldname": "notes",
    "fieldtype": "Data",
    "label": "Notes"
+  },
+  {
+   "description": "Estimated shrimp in the pond. Leave empty to use stocked \u2212 deaths \u2212 harvested.",
+   "fieldname": "population",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Populasi (ekor)"
+  },
+  {
+   "fieldname": "sr",
+   "fieldtype": "Percent",
+   "label": "SR (%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "adg_g",
+   "fieldtype": "Float",
+   "label": "ADG (g/day)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "description": "Feed on the sampling day",
+   "fieldname": "feed_day_kg",
+   "fieldtype": "Float",
+   "label": "PH (kg)",
+   "precision": "1",
+   "read_only": 1
+  },
+  {
+   "description": "Feed since the previous sampling",
+   "fieldname": "feed_period_kg",
+   "fieldtype": "Float",
+   "label": "PM (kg)",
+   "precision": "1",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-10-20 03:18:15.035525",
+ "modified": "2026-10-23 23:48:16.435197",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Growth Sample Row",
