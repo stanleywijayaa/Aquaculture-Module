@@ -23,6 +23,7 @@ class GrowthSampleRow(Document):
 		feed_day_kg: DF.Float
 		feed_period_kg: DF.Float
 		feed_to_date_kg: DF.Float
+		mbw_target: DF.Float
 		notes: DF.Data | None
 		parent: DF.Data
 		parentfield: DF.Data

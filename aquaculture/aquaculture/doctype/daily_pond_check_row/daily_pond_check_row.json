@@ -28,7 +28,6 @@
    "fetch_from": "pond_cycle.pond",
    "fieldname": "pond",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Pond",
    "options": "Pond",
    "read_only": 1
@@ -74,7 +73,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-10-13 18:16:00.134147",
+ "modified": "2026-10-25 01:38:33.922223",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Daily Pond Check Row",

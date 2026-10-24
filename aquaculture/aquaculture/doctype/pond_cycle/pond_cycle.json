@@ -17,6 +17,7 @@
   "column_break_dates",
   "days_of_culture",
   "total_stocked",
+  "total_counted",
   "density_per_m2",
   "total_death",
   "est_alive",
@@ -30,6 +31,7 @@
   "last_abw_g",
   "last_population",
   "last_adg_g",
+  "last_mbw_target",
   "column_break_growth",
   "fcr",
   "est_biomass_kg",
@@ -145,7 +147,7 @@
   {
    "fieldname": "total_death",
    "fieldtype": "Int",
-   "label": "Total Death",
+   "label": "Total Deaths",
    "read_only": 1
   },
   {
@@ -273,6 +275,19 @@
    "label": "ADG (g/day)",
    "precision": "2",
    "read_only": 1
+  },
+  {
+   "fieldname": "total_counted",
+   "fieldtype": "Int",
+   "label": "Counted at Stocking",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_mbw_target",
+   "fieldtype": "Float",
+   "label": "MBW Target (g)",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -301,7 +316,7 @@
    "table_fieldname": "rows"
   }
  ],
- "modified": "2026-10-23 23:57:03.320410",
+ "modified": "2026-10-25 01:32:22.428594",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Pond Cycle",

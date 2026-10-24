@@ -9,7 +9,8 @@
  "field_order": [
   "pond_cycle",
   "pond",
-  "quantity"
+  "quantity",
+  "counted_qty"
  ],
  "fields": [
   {
@@ -33,16 +34,23 @@
    "fieldname": "quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Quantity (ekor)",
+   "label": "Qty on Nota (ekor)",
    "non_negative": 1,
    "reqd": 1
+  },
+  {
+   "description": "The farm\u2019s own count at stocking (optional)",
+   "fieldname": "counted_qty",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Counted (ekor)"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-10-12 01:42:03.051425",
+ "modified": "2026-10-25 01:29:42.002057",
  "modified_by": "Administrator",
  "module": "Aquaculture",
  "name": "Stocking Event Pond",

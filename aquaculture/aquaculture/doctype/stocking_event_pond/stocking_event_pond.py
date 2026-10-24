@@ -14,6 +14,7 @@ class StockingEventPond(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		counted_qty: DF.Int
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data

@@ -8,10 +8,10 @@ from frappe.model.naming import make_autoname
 from frappe.utils import date_diff, flt, getdate, today
 from frappe.query_builder.functions import Min, Sum
 from frappe.query_builder import Order
-
+ 
 from aquaculture.aquaculture.utils import deaths, harvested
-
-
+ 
+ 
 class PondCycle(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
@@ -31,6 +31,7 @@ class PondCycle(Document):
 		last_abw_g: DF.Float
 		last_adg_g: DF.Float
 		last_count_per_kg: DF.Int
+		last_mbw_target: DF.Float
 		last_population: DF.Int
 		last_sample_date: DF.Date | None
 		notes: DF.SmallText | None
@@ -38,6 +39,7 @@ class PondCycle(Document):
 		prep_start_date: DF.Date
 		status: DF.Literal["Preparation", "Stocked", "Partially Harvested", "Closed"]
 		stocking_date: DF.Date | None
+		total_counted: DF.Int
 		total_death: DF.Int
 		total_feed_cost: DF.Currency
 		total_feed_kg: DF.Float
@@ -46,29 +48,30 @@ class PondCycle(Document):
 		total_stocked: DF.Int
 	# end: auto-generated types
 
+ 
 	def autoname(self):
 		# SR-A1-26-01: pond, year, then a counter per pond per year
 		self.name = make_autoname(f"{self.pond}-.YY.-.##")
-
+ 
 	@property
 	def days_of_culture(self):
 		if not self.stocking_date:
 			return None
 		end = self.end_date or today()
 		return date_diff(end, self.stocking_date)
-
+ 
 	def validate(self):
 		self.validate_closed_lock()
 		pond = frappe.db.get_value("Pond", self.pond, ["block", "farm_site", "disabled"], as_dict=True)
 		self.block = pond.block
 		self.farm_site = pond.farm_site
-
+ 
 		if pond.disabled and self.is_new():
 			frappe.throw(_("Pond {0} is disabled and cannot start a new cycle").format(self.pond))
-
+ 
 		self.validate_dates()
 		self.validate_one_open_cycle()
-
+ 
 	def validate_dates(self):
 		if self.stocking_date and getdate(self.stocking_date) < getdate(self.prep_start_date):
 			frappe.throw(_("Stocking Date cannot be before Prep Start Date"))
@@ -76,7 +79,7 @@ class PondCycle(Document):
 			frappe.throw(_("End Date cannot be before Stocking Date"))
 		if self.status == "Closed" and not self.end_date:
 			frappe.throw(_("Set an End Date before closing the cycle"))
-
+ 
 	def validate_one_open_cycle(self):
 		if self.status == "Closed":
 			return
@@ -95,50 +98,56 @@ class PondCycle(Document):
 			return
 		if "System Manager" in frappe.get_roles():
 			return
-
+ 
 		locked = ("pond", "status", "prep_start_date", "stocking_date", "end_date")
 		changed = [f for f in locked if str(self.get(f) or "") != str(before.get(f) or "")]
 		if changed:
 			frappe.throw(_("Cycle {0} is closed. Only a manager can change it.").format(self.name))
-
+ 
 	@property
 	def density_per_m2(self):
 		area = frappe.db.get_value("Pond", self.pond, "area_m2")
 		return (self.total_stocked or 0) / area if area else None
-
+ 
 	def update_stocking(self):
 		row = frappe.qb.DocType("Stocking Event Pond")
 		event = frappe.qb.DocType("Stocking Event")
-		first_date, total = (
+		first_date, total, counted = (
 			frappe.qb.from_(row)
 			.join(event).on(row.parent == event.name)
-			.select(Min(event.stocking_date), Sum(row.quantity))
+			.select(Min(event.stocking_date), Sum(row.quantity), Sum(row.counted_qty))
 			.where((row.pond_cycle == self.name) & (row.parenttype == "Stocking Event"))
 		).run()[0]
-
-		self.db_set({"stocking_date": first_date, "total_stocked": total or 0})
-
+ 
+		self.db_set({
+			"stocking_date": first_date,
+			"total_stocked": total or 0,      # qty on the hatchery's nota
+			"total_counted": counted or 0,    # the farm's own count (starting Populasi)
+		})
+ 
 		if first_date and self.status == "Preparation":
 			self.db_set("status", "Stocked")
 		elif not first_date and self.status == "Stocked":
 			self.db_set("status", "Preparation")
-
+ 
 	@property
 	def est_alive(self):
 		if self.status == "Closed":
 			return 0
 		if self.last_population and self.last_sample_date:
 			# start from the farm's own estimate, minus what happened since that sample
-			pcs, _ = harvested(self.name, since=self.last_sample_date)
+			pcs, _kg = harvested(self.name, since=self.last_sample_date)
 			return max(flt(self.last_population) - deaths(self.name, after=self.last_sample_date) - pcs, 0)
-		return max(flt(self.total_stocked) - flt(self.total_death) - flt(self.total_harvest_pcs), 0)
-	
+		# before the first sample: start from the farm's count, or the nota if not counted
+		start = flt(self.total_counted) or flt(self.total_stocked)
+		return max(start - flt(self.total_death) - flt(self.total_harvest_pcs), 0)
+ 
 	@property
 	def est_survival(self):
 		if not self.total_stocked:
 			return 0
 		return (self.est_alive + flt(self.total_harvest_pcs)) / flt(self.total_stocked) * 100
-
+ 
 	def update_mortality(self):
 		row = frappe.qb.DocType("Daily Pond Check Row")
 		total = (
@@ -147,7 +156,7 @@ class PondCycle(Document):
 			.where((row.pond_cycle == self.name) & (row.parenttype == "Daily Pond Check"))
 		).run()[0][0]
 		self.db_set("total_death", total or 0)
-
+ 
 	def update_feed(self):
 		fl = frappe.qb.DocType("Feed Log")
 		fi = frappe.qb.DocType("Feed Log Item")
@@ -158,13 +167,14 @@ class PondCycle(Document):
 			.where((fi.pond_cycle == self.name) & (fl.docstatus == 1))
 		).run()[0]
 		self.db_set({"total_feed_kg": flt(kg), "total_feed_cost": flt(cost)})
-
+ 
 	def update_growth(self):
 		gs = frappe.qb.DocType("Growth Sample")
 		gr = frappe.qb.DocType("Growth Sample Row")
 		rows = (
 			frappe.qb.from_(gr).join(gs).on(gr.parent == gs.name)
-			.select(gs.sample_date, gr.count_per_kg, gr.abw_g, gr.est_biomass_kg, gr.fcr)
+			.select(gs.sample_date, gr.count_per_kg, gr.abw_g, gr.est_biomass_kg, gr.fcr,
+					gr.population, gr.adg_g, gr.mbw_target)
 			.where(gr.pond_cycle == self.name)
 			.orderby(gs.sample_date, order=Order.desc)
 			.limit(1)
@@ -177,9 +187,10 @@ class PondCycle(Document):
 			"est_biomass_kg": last.get("est_biomass_kg") or 0,
 			"fcr": last.get("fcr") or 0,
 			"last_population": last.get("population") or 0,
-  			"last_adg_g": last.get("adg_g") or 0,
+			"last_adg_g": last.get("adg_g") or 0,
+			"last_mbw_target": last.get("mbw_target") or 0,
 		})
-
+ 
 	def update_harvest(self):
 		he = frappe.qb.DocType("Harvest Event")
 		hr = frappe.qb.DocType("Harvest Event Pond")
@@ -188,18 +199,18 @@ class PondCycle(Document):
 			.select(he.harvest_date, hr.harvest_type, hr.weight_kg, hr.pieces)
 			.where((hr.pond_cycle == self.name) & (he.docstatus == 1))
 		).run(as_dict=True)
-
+ 
 		kg = sum(flt(r.weight_kg) for r in rows)
 		pcs = sum(flt(r.pieces) for r in rows)
 		totals = [r for r in rows if r.harvest_type == "Total"]
-
+ 
 		if totals:
 			status, end_date = "Closed", max(r.harvest_date for r in totals)
 		elif rows:
 			status, end_date = "Partially Harvested", None
 		else:
 			status, end_date = "Stocked", None
-
+ 
 		closed = bool(totals)
 		self.db_set({
 			"status": status,
@@ -209,5 +220,3 @@ class PondCycle(Document):
 			"harvest_survival": pcs / flt(self.total_stocked) * 100 if closed and pcs and self.total_stocked else 0,
 			"final_fcr": flt(self.total_feed_kg) / kg if closed and kg else 0,
 		})
-
-	pass
